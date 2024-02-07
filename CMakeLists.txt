@@ -9,4 +9,7 @@ include_directories(test-unit)
 add_executable(Gator_AVL_Project
         src/main.cpp
         test-unit/catch.hpp
-        test-unit/test.cpp)
+        test-unit/test.cpp
+        src/AVL.cpp
+        src/AVL.h
+)

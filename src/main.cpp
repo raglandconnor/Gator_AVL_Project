@@ -1,4 +1,5 @@
 #include <iostream>
+#include "AVL.h"
 
 /* Note: 
 	1. You will have to comment main() when unit testing your code because catch uses its own main().
@@ -6,6 +7,8 @@
 */
 
 int main(){
-	return 0;
+	AVLTree myAVL;
+    myAVL.insert("Connor Ragland", "78506999");
+    myAVL.inorder();
 }
 
