@@ -27,8 +27,7 @@ struct TreeNode {
 
 class AVLTree {
 private:
-    int max(int a, int b);
-    int getHeight(TreeNode* node);
+    int nodeHeight(TreeNode* node);
     int compareID(string ufid1, string ufid2);
 //    string validName(string name);
 

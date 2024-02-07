@@ -4,19 +4,8 @@
 
 #include "AVL.h"
 
-int AVLTree::max(int a, int b) {
-    if (a > b) {
-        return a;
-    } else {
-        return b;
-    }
-}
-
-int AVLTree::getHeight(TreeNode* node) {
-    if (node == nullptr) {
-        return 0;
-    }
-    return node->height;
+int AVLTree::nodeHeight(TreeNode* node) {
+    return 1 + std::max(node->left == nullptr ? 0 : node->left->height, node->right == nullptr ? 0 : node->right->height);
 }
 
 int AVLTree::compareID(string ufid1, string ufid2) {
@@ -49,7 +38,7 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, string name, string ufid) {
         node->right = helperInsert(node->right, name, ufid);
     }
 
-    node->height = 1 + max(getHeight(node->left), getHeight(node->right));  // Referenced from lecture slides
+    node->height = nodeHeight(node);  // Referenced from lecture slides
 
     //TODO: balance
 
