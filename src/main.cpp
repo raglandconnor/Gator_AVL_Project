@@ -8,7 +8,9 @@
 
 int main(){
 	AVLTree myAVL;
-    myAVL.insert("Connor Ragland", "78506999");
-    myAVL.inorder();
+//    myAVL.insert("Connor Ragland", "78506999");
+//    myAVL.inorder();
+
+    myAVL.validName("\"Connor Ragland\"");
 }
 

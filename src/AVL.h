@@ -29,7 +29,9 @@ class AVLTree {
 private:
     int nodeHeight(TreeNode* node);
     int compareID(string ufid1, string ufid2);
-//    string validName(string name);
+    string removeQuotations(string name);
+    bool validName(string name);
+    bool validID(string ufid);
 
     TreeNode* helperInsert(TreeNode* node, string name, string ufid);
     void helperInorder(TreeNode* node);
@@ -39,6 +41,7 @@ public:
     void insert(string name, string ufid);
     AVLTree() : root() {}
     void inorder();
+
 
 };
 
