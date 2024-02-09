@@ -68,6 +68,44 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
     return node;
 }
 
+void AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {
+    // TODO: Check valid id?
+    if (node == nullptr) {
+        cout << "Unsuccessful" << endl;
+    }
+    else if (compareID(ufid, node->ufid) == 0) {
+        cout << "Successful" << endl;
+        // TODO: Remove that node and re link nodes
+    }
+    else {
+        if (compareID(ufid, node->ufid) < 0) {
+            helperRemoveID(node->left, ufid);
+        }
+        else {
+            helperRemoveID(node->right, ufid);
+        }
+    }
+}
+
+void AVLTree::helperSearchID(TreeNode* node, std::string ufid) {
+    // TODO: Check valid id?
+    if (node == nullptr) {
+        cout << "Unsuccessful" << endl;
+    }
+    else if (compareID(ufid, node->ufid) == 0) {
+        cout << node->name << endl;
+        cout << "Successful" << endl;
+    }
+    else {
+        if (compareID(ufid, node->ufid) < 0) {
+            helperSearchID(node->left, ufid);
+        }
+        else {
+            helperSearchID(node->right, ufid);
+        }
+    }
+}
+
 void AVLTree::helperInorder(TreeNode* node) {
     if (node == nullptr) {
         cout << "";
@@ -82,6 +120,14 @@ void AVLTree::helperInorder(TreeNode* node) {
 
 void AVLTree::insert(std::string name, std::string ufid) {
     this->root = helperInsert(this->root, name, ufid);
+}
+
+void AVLTree::removeID(std::string ufid) {
+    helperRemoveID(this->root, ufid);
+}
+
+void AVLTree::searchID(std::string ufid) {
+    helperSearchID(this->root, ufid);
 }
 
 void AVLTree::inorder() {

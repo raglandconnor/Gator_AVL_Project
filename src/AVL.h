@@ -27,6 +27,7 @@ struct TreeNode {
 
 class AVLTree {
 private:
+    TreeNode* root;
     int nodeHeight(TreeNode* node);
     int compareID(string ufid1, string ufid2);
     string removeQuotations(string name);
@@ -34,13 +35,18 @@ private:
     bool validID(string ufid);
 
     TreeNode* helperInsert(TreeNode* node, string name, string ufid);
+    void helperRemoveID(TreeNode* node, string ufid);
+    void helperSearchID(TreeNode* node, string ufid);
     void helperInorder(TreeNode* node);
 
 public:
-    TreeNode* root;
     void insert(string name, string ufid);
-    AVLTree() : root() {}
+    void removeID(string ufid);
+    void searchID(string ufid);
     void inorder();
+
+    AVLTree() : root() {}
+
 
 
 };
