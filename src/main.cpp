@@ -11,6 +11,6 @@ int main(){
 //    myAVL.insert("Connor Ragland", "78506999");
 //    myAVL.inorder();
 
-    myAVL.validName("\"Connor Ragland\"");
+//    myAVL.validName("\"Connor Ragland\"");
 }
 

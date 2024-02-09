@@ -41,6 +41,24 @@ bool AVLTree::validID(std::string ufid) {
     return all_of(ufid.begin(), ufid.end(), ::isdigit) && ufid.length() == 8;
 }
 
+bool AVLTree::containsID(TreeNode* node, std::string ufid) {
+    bool result = false;
+    if (node == nullptr) {
+        result = false;
+    }
+    else if (compareID(ufid, node->ufid) == 0) {
+        result = true;
+    }
+    else {
+        if (compareID(ufid, node->ufid) < 0) {
+            result = containsID(node->left, ufid);
+        } else {
+            result = containsID(node->right, ufid);
+        }
+    }
+    return result;
+}
+
 TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string ufid) {
     name = removeQuotations(name);
     if (!validName(name) || !validID(ufid)) {
@@ -106,6 +124,10 @@ void AVLTree::helperSearchID(TreeNode* node, std::string ufid) {
     }
 }
 
+//void AVLTree::helperSearchName(TreeNode* node, std::string name) {  // Need to search through whole tree to find all names.
+//
+//}
+
 void AVLTree::helperInorder(TreeNode* node) {
     if (node == nullptr) {
         cout << "";
@@ -129,6 +151,10 @@ void AVLTree::removeID(std::string ufid) {
 void AVLTree::searchID(std::string ufid) {
     helperSearchID(this->root, ufid);
 }
+
+//void AVLTree::searchName(std::string name) {
+//    helperSearchName(this->root, name);
+//}
 
 void AVLTree::inorder() {
     helperInorder(this->root);

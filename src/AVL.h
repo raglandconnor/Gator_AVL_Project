@@ -33,16 +33,19 @@ private:
     string removeQuotations(string name);
     bool validName(string name);
     bool validID(string ufid);
+    bool containsID(TreeNode* node, string ufid);  // T: ufid present in tree
 
     TreeNode* helperInsert(TreeNode* node, string name, string ufid);
     void helperRemoveID(TreeNode* node, string ufid);
     void helperSearchID(TreeNode* node, string ufid);
+//    void helperSearchName(TreeNode* node, string name);
     void helperInorder(TreeNode* node);
 
 public:
     void insert(string name, string ufid);
     void removeID(string ufid);
     void searchID(string ufid);
+//    void searchName(string name);
     void inorder();
 
     AVLTree() : root() {}
