@@ -60,9 +60,14 @@ bool AVLTree::containsID(TreeNode* node, std::string ufid) {
 }
 
 TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string ufid) {
+    if (containsID(node, ufid)) {  // If already present => don't add
+        cout << "Unsuccessful" << endl;
+        return node;
+    }
     name = removeQuotations(name);
     if (!validName(name) || !validID(ufid)) {
         cout << "Unsuccessful" << endl;
+        return node;
     }
     else {
         if (node == nullptr) {
@@ -70,9 +75,6 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
         }
         else if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
             node->left = helperInsert(node->left, name, ufid);
-        }
-        else if (compareID(ufid, node->ufid) == 0) {  //TODO: Fix errors with inserting duplicates. Heights not calculating properly.
-            cout << "Unsuccessful" << endl;
         }
         else {  // > 0 : ufid1 > ufid2
             node->right = helperInsert(node->right, name, ufid);
