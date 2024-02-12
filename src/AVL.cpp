@@ -136,9 +136,31 @@ void AVLTree::helperInorder(TreeNode* node) {
     }
     else {
         helperInorder(node->left);
-//        cout << node->name << " ";
+        cout << node->name << " ";
 //        cout << node->height << " ";
         helperInorder(node->right);
+    }
+}
+
+void AVLTree::helperPreorder(TreeNode *node) {
+    if (node == nullptr) {
+        cout << "";
+    }
+    else {
+        cout << node->name << " ";
+        helperPreorder(node->left);
+        helperPreorder(node->right);
+    }
+}
+
+void AVLTree::helperPostorder(TreeNode *node) {
+    if (node == nullptr) {
+        cout << "";
+    }
+    else {
+        helperPostorder(node->left);
+        helperPostorder(node->right);
+        cout << node->name << " ";
     }
 }
 
@@ -158,6 +180,14 @@ void AVLTree::searchID(std::string ufid) {
 //    helperSearchName(this->root, name);
 //}
 
-void AVLTree::inorder() {
+void AVLTree::printInorder() {
     helperInorder(this->root);
+}
+
+void AVLTree::printPreorder() {
+    helperPreorder(this->root);
+}
+
+void AVLTree::printPostorder() {
+    helperPostorder(this->root);
 }

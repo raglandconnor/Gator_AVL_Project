@@ -40,13 +40,17 @@ private:
     void helperSearchID(TreeNode* node, string ufid);
 //    void helperSearchName(TreeNode* node, string name);
     void helperInorder(TreeNode* node);
+    void helperPreorder(TreeNode* node);
+    void helperPostorder(TreeNode* node);
 
 public:
     void insert(string name, string ufid);
     void removeID(string ufid);
     void searchID(string ufid);
 //    void searchName(string name);
-    void inorder();
+    void printInorder();
+    void printPreorder();
+    void printPostorder();
 
     AVLTree() : root() {}
 
