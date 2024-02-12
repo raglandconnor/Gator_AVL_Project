@@ -71,7 +71,8 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
     }
     else {
         if (node == nullptr) {
-            return new TreeNode(name, ufid);
+
+            node = new TreeNode(name, ufid);
         }
         else if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
             node->left = helperInsert(node->left, name, ufid);
@@ -190,4 +191,13 @@ void AVLTree::printPreorder() {
 
 void AVLTree::printPostorder() {
     helperPostorder(this->root);
+}
+
+void AVLTree::printLevelCount() {
+    if (this->root == nullptr) {
+        cout << 0;
+    }
+    else {
+        cout << this->root->height << endl;
+    }
 }

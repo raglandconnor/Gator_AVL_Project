@@ -18,7 +18,7 @@ struct TreeNode {
     string name;
     string ufid;
 
-    int height = 0;
+    int height = 0;  // Zero-based height
 
     TreeNode* left;
     TreeNode* right;
@@ -51,6 +51,7 @@ public:
     void printInorder();
     void printPreorder();
     void printPostorder();
+    void printLevelCount();
 
     AVLTree() : root() {}
 
