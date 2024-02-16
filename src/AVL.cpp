@@ -263,7 +263,16 @@ void AVLTree::helperSearchID(TreeNode* node, std::string ufid) {
 }
 
 void AVLTree::helperSearchName(TreeNode* node, std::string name) {  // Need to search through whole tree to find all names.
-
+    if (node == nullptr) {
+        cout << "";
+    }
+    else {
+        if (identicalName(node->name, name)) {
+            cout << node->ufid << endl;
+        }
+        helperSearchName(node->left, name);
+        helperSearchName(node->right, name);
+    }
 }
 
 void AVLTree::helperInorder(TreeNode* node) {
@@ -327,7 +336,12 @@ void AVLTree::searchID(std::string ufid) {
 }
 
 void AVLTree::searchName(std::string name) {
-    helperSearchName(this->root, name);
+    if (!containsName(this->root, name)) {
+        cout << "Unsuccessful" << endl;
+    }
+    else {
+        helperSearchName(this->root, name);
+    }
 }
 
 void AVLTree::printInorder() {
