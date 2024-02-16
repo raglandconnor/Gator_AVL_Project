@@ -48,9 +48,9 @@ private:
     void helperSearchID(TreeNode* node, string ufid);
     void helperSearchName(TreeNode* node, string name);  // Returns false if name is not found
     void helperInorder(TreeNode* node);
+    void vectorInorder(TreeNode* node, vector<string> &ufidVector);
     void helperPreorder(TreeNode* node);
     void helperPostorder(TreeNode* node);
-//    void helperRemoveInorder(TreeNode* node, int &n);
 
 public:
     void insert(string name, string ufid);

@@ -287,6 +287,14 @@ void AVLTree::helperInorder(TreeNode* node) {
     }
 }
 
+void AVLTree::vectorInorder(TreeNode* node, vector<string> &ufidVector) {
+    if (node != nullptr) {
+        vectorInorder(node->left, ufidVector);
+        ufidVector.push_back(node->ufid);
+        vectorInorder(node->right, ufidVector);
+    }
+}
+
 void AVLTree::helperPreorder(TreeNode* node) {
     if (node == nullptr) {
         cout << "";
@@ -308,20 +316,6 @@ void AVLTree::helperPostorder(TreeNode* node) {
         cout << node->name << " ";
     }
 }
-
-//void AVLTree::helperRemoveInorder(TreeNode *node, int &n) {
-//    if (node == nullptr) {
-//        cout << "Unsuccessful";
-//    }
-//    else {
-//        helperRemoveInorder(node->left, n);
-//
-//        if (n == 0) {
-//            TreeNode*
-//        }
-//        helperRemoveInorder(node->right, n);
-//    }
-//}
 
 void AVLTree::insert(std::string name, std::string ufid) {
     this->root = helperInsert(this->root, name, ufid);
@@ -365,6 +359,13 @@ void AVLTree::printLevelCount() {
     }
 }
 
-//void AVLTree::removeInorder(int n) {
-//    helperRemoveInorder(this->root, n, 0);
-//}
+void AVLTree::removeInorder(int n) {
+    vector<string> ufidVector;
+    vectorInorder(this->root, ufidVector);
+    if (ufidVector.size()-1 < n) {
+        cout << "Unsuccessful" << endl;
+    }
+    else {
+        removeID(ufidVector.at(n));
+    }
+}
