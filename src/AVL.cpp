@@ -25,6 +25,10 @@ int AVLTree::compareID(std::string ufid1, std::string ufid2) {
     return ufid1.compare(ufid2);
 }
 
+bool AVLTree::identicalName(std::string name1, std::string name2) {
+    return name1 == name2;
+}
+
 string AVLTree::removeQuotations(std::string name) {  // Referenced https://cplusplus.com/reference/cstring/strtok/
     const char* charName = name.c_str();
 
@@ -64,6 +68,29 @@ bool AVLTree::containsID(TreeNode* node, std::string ufid) {
             result = containsID(node->left, ufid);
         } else {
             result = containsID(node->right, ufid);
+        }
+    }
+    return result;
+}
+
+bool AVLTree::containsName(TreeNode* node, std::string name) {
+    bool result = false;
+    if (node == nullptr) {
+        result = false;
+    }
+    else {
+        if (identicalName(name, node->name)) {
+            return true;
+        }
+
+        result = containsName(node->left, name);
+        if (result) {
+            return true;
+        }
+
+        result = containsName(node->right, name);
+        if (result) {
+            return true;
         }
     }
     return result;
@@ -235,9 +262,9 @@ void AVLTree::helperSearchID(TreeNode* node, std::string ufid) {
     }
 }
 
-//void AVLTree::helperSearchName(TreeNode* node, std::string name) {  // Need to search through whole tree to find all names.
-//
-//}
+void AVLTree::helperSearchName(TreeNode* node, std::string name) {  // Need to search through whole tree to find all names.
+
+}
 
 void AVLTree::helperInorder(TreeNode* node) {
     if (node == nullptr) {
@@ -299,9 +326,9 @@ void AVLTree::searchID(std::string ufid) {
     helperSearchID(this->root, ufid);
 }
 
-//void AVLTree::searchName(std::string name) {
-//    helperSearchName(this->root, name);
-//}
+void AVLTree::searchName(std::string name) {
+    helperSearchName(this->root, name);
+}
 
 void AVLTree::printInorder() {
     helperInorder(this->root);

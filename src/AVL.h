@@ -31,10 +31,12 @@ private:
     int nodeHeight(TreeNode* node);
     int getHeight(TreeNode* node);
     int compareID(string ufid1, string ufid2);
+    bool identicalName(string name1, string name2);  // T: same name
     string removeQuotations(string name);
     bool validName(string name);
     bool validID(string ufid);  // 1: valid
     bool containsID(TreeNode* node, string ufid);  // T: ufid present in tree
+    bool containsName(TreeNode* node, string name);  // T: name present in tree. Could be one or more
     int calculateBalance(TreeNode* node);
     TreeNode* rotateLeft(TreeNode* node);
     TreeNode* rotateRight(TreeNode* node);
@@ -44,7 +46,7 @@ private:
     TreeNode* helperInsert(TreeNode* node, string name, string ufid);
     TreeNode* helperRemoveID(TreeNode* node, string ufid);
     void helperSearchID(TreeNode* node, string ufid);
-//    void helperSearchName(TreeNode* node, string name);
+    void helperSearchName(TreeNode* node, string name);
     void helperInorder(TreeNode* node);
     void helperPreorder(TreeNode* node);
     void helperPostorder(TreeNode* node);
@@ -54,7 +56,7 @@ public:
     void insert(string name, string ufid);
     void removeID(string ufid);
     void searchID(string ufid);
-//    void searchName(string name);
+    void searchName(string name);
     void printInorder();
     void printPreorder();
     void printPostorder();
