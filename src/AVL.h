@@ -18,7 +18,7 @@ struct TreeNode {
     string name;
     string ufid;
 
-    int height = 0;  // Zero-based height
+    int height = 1;  // One-based height
 
     TreeNode* left;
     TreeNode* right;
@@ -29,19 +29,26 @@ class AVLTree {
 private:
     TreeNode* root;
     int nodeHeight(TreeNode* node);
+    int getHeight(TreeNode* node);
     int compareID(string ufid1, string ufid2);
     string removeQuotations(string name);
     bool validName(string name);
-    bool validID(string ufid);
+    bool validID(string ufid);  // 1: valid
     bool containsID(TreeNode* node, string ufid);  // T: ufid present in tree
+    int calculateBalance(TreeNode* node);
+    TreeNode* rotateLeft(TreeNode* node);
+    TreeNode* rotateRight(TreeNode* node);
+    TreeNode* rotateLeftRight(TreeNode* node);
+    TreeNode* rotateRightLeft(TreeNode* node);
 
     TreeNode* helperInsert(TreeNode* node, string name, string ufid);
-    void helperRemoveID(TreeNode* node, string ufid);
+    TreeNode* helperRemoveID(TreeNode* node, string ufid);
     void helperSearchID(TreeNode* node, string ufid);
 //    void helperSearchName(TreeNode* node, string name);
     void helperInorder(TreeNode* node);
     void helperPreorder(TreeNode* node);
     void helperPostorder(TreeNode* node);
+//    void helperRemoveInorder(TreeNode* node, int &n);
 
 public:
     void insert(string name, string ufid);
@@ -52,6 +59,7 @@ public:
     void printPreorder();
     void printPostorder();
     void printLevelCount();
+    void removeInorder(int n);
 
     AVLTree() : root() {}
 

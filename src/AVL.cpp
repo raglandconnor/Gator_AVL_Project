@@ -4,8 +4,18 @@
 
 #include "AVL.h"
 
-int AVLTree::nodeHeight(TreeNode* node) {
+int AVLTree::nodeHeight(TreeNode* node) {  // Referenced from lecture slides
+    if (node == nullptr) {
+        return 0;
+    }
     return 1 + std::max(node->left == nullptr ? 0 : node->left->height, node->right == nullptr ? 0 : node->right->height);
+}
+
+int AVLTree::getHeight(TreeNode *node) {  // Returns height of a particular node (one based)
+    if (node == nullptr) {
+        return 0;
+    }
+    return node->height;
 }
 
 int AVLTree::compareID(std::string ufid1, std::string ufid2) {
@@ -59,6 +69,52 @@ bool AVLTree::containsID(TreeNode* node, std::string ufid) {
     return result;
 }
 
+int AVLTree::calculateBalance(TreeNode* node) {  // Calculates the balance facter of a particular node
+    return node == nullptr ? 0 : (getHeight(node->left) - getHeight((node->right)));
+}
+
+TreeNode* AVLTree::rotateLeft(TreeNode* node) {  // node = the root of the rotation
+    TreeNode* rightChild = node->right;
+    TreeNode* rightChildLeftSubtree = rightChild->left;
+
+    // Rotate
+    rightChild->left = node;
+    node->right = rightChildLeftSubtree;
+
+    // Update heights of both nodes
+    node->height = nodeHeight(node);
+    rightChild->height = nodeHeight(rightChild);
+
+    // rightChild is now the root of that subtree
+    return rightChild;
+}
+
+TreeNode* AVLTree::rotateRight(TreeNode* node) {  // node = root of rotation
+    TreeNode* leftChild = node->left;
+    TreeNode* leftChildRightSubtree = leftChild->right;
+
+    // Rotate
+    leftChild->right = node;
+    node->left = leftChildRightSubtree;
+
+    // Update heights of both nodes
+    node->height = nodeHeight(node);
+    leftChild->height = nodeHeight(leftChild);
+
+    // leftChild is now the root of that subtree
+    return leftChild;
+}
+
+TreeNode* AVLTree::rotateLeftRight(TreeNode* node) {  // node = root of rotation
+    node->left = rotateLeft(node->left);
+    return rotateRight(node);
+}
+
+TreeNode* AVLTree::rotateRightLeft(TreeNode* node) {  // node = root of rotation
+    node->right = rotateRight(node->right);
+    return rotateLeft(node);
+}
+
 TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string ufid) {
     if (containsID(node, ufid)) {  // If already present => don't add
         cout << "Unsuccessful" << endl;
@@ -71,45 +127,97 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
     }
     else {
         if (node == nullptr) {
-
-            node = new TreeNode(name, ufid);
+            return new TreeNode(name, ufid);
         }
-        else if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
+        if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
             node->left = helperInsert(node->left, name, ufid);
+        }
+        else if (compareID(ufid, node->ufid) == 0) {
+            cout << "Unsuccessful" << endl;
+            return node;
         }
         else {  // > 0 : ufid1 > ufid2
             node->right = helperInsert(node->right, name, ufid);
         }
     }
 
-    node->height = nodeHeight(node);  // Referenced from lecture slides
+    node->height = nodeHeight(node);
 
-    //TODO: balance
+    int balanceFactor = calculateBalance(node);
+
+    if (balanceFactor > 1 && ufid < node->left->ufid) {  // Left left
+        return rotateRight(node);
+    }
+    if (balanceFactor < -1 && ufid > node->right->ufid) {  // Right right
+        return rotateLeft(node);
+    }
+    if (balanceFactor > 1 && ufid > node->left->ufid) {  // Left right
+        return rotateLeftRight(node);
+    }
+    if (balanceFactor < -1 && ufid < node->right->ufid) {  // Right left
+        return rotateRightLeft(node);
+    }
 
     return node;
 }
 
-void AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {
-    // TODO: Check valid id?
-    if (node == nullptr) {
+TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {
+    if (!containsID(node, ufid)) {  // If already present => don't add
         cout << "Unsuccessful" << endl;
+        return node;
     }
-    else if (compareID(ufid, node->ufid) == 0) {
-        cout << "Successful" << endl;
-        // TODO: Remove that node and re link nodes
+    if (node == nullptr) {
+        return node;
     }
-    else {
-        if (compareID(ufid, node->ufid) < 0) {
-            helperRemoveID(node->left, ufid);
+    if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
+        node->left = helperRemoveID(node->left, ufid);
+        return node;
+    }
+    if (compareID(ufid, node->ufid) > 0) {  // ufid1 > ufid2
+        node->right = helperRemoveID(node->right, ufid);
+        return node;
+    }
+
+    if (node->left == nullptr && node->right == nullptr) {  // No children
+        delete node;
+        return nullptr;
+    }
+    else if (node->left == nullptr) {  // One right child
+        TreeNode* temp = node->right;
+        delete node;
+        return temp;
+    }
+    else if (node->right == nullptr) {  // One left child
+        TreeNode* temp = node->left;
+        delete node;
+        return temp;
+    }
+    else {  // Two children
+        TreeNode* parent = node;
+
+        // Find leftmost node in the right subtree
+        TreeNode* current = node->right;
+        while (current->left != nullptr) {
+            parent = current;
+            current = current->left;
+        }
+
+        if (parent != node) {
+            parent->left = current->right;
         }
         else {
-            helperRemoveID(node->right, ufid);
+            parent->right = current->right;
         }
+
+        node->name = current->name;
+        node->ufid = current->ufid;
+
+        delete current;
+        return node;
     }
 }
 
 void AVLTree::helperSearchID(TreeNode* node, std::string ufid) {
-    // TODO: Check valid id?
     if (node == nullptr) {
         cout << "Unsuccessful" << endl;
     }
@@ -143,7 +251,7 @@ void AVLTree::helperInorder(TreeNode* node) {
     }
 }
 
-void AVLTree::helperPreorder(TreeNode *node) {
+void AVLTree::helperPreorder(TreeNode* node) {
     if (node == nullptr) {
         cout << "";
     }
@@ -154,7 +262,7 @@ void AVLTree::helperPreorder(TreeNode *node) {
     }
 }
 
-void AVLTree::helperPostorder(TreeNode *node) {
+void AVLTree::helperPostorder(TreeNode* node) {
     if (node == nullptr) {
         cout << "";
     }
@@ -165,12 +273,26 @@ void AVLTree::helperPostorder(TreeNode *node) {
     }
 }
 
+//void AVLTree::helperRemoveInorder(TreeNode *node, int &n) {
+//    if (node == nullptr) {
+//        cout << "Unsuccessful";
+//    }
+//    else {
+//        helperRemoveInorder(node->left, n);
+//
+//        if (n == 0) {
+//            TreeNode*
+//        }
+//        helperRemoveInorder(node->right, n);
+//    }
+//}
+
 void AVLTree::insert(std::string name, std::string ufid) {
     this->root = helperInsert(this->root, name, ufid);
 }
 
 void AVLTree::removeID(std::string ufid) {
-    helperRemoveID(this->root, ufid);
+    this->root = helperRemoveID(this->root, ufid);
 }
 
 void AVLTree::searchID(std::string ufid) {
@@ -201,3 +323,7 @@ void AVLTree::printLevelCount() {
         cout << this->root->height << endl;
     }
 }
+
+//void AVLTree::removeInorder(int n) {
+//    helperRemoveInorder(this->root, n, 0);
+//}
