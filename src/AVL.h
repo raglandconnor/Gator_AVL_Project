@@ -42,7 +42,6 @@ private:
     TreeNode* rotateRight(TreeNode* node);
     TreeNode* rotateLeftRight(TreeNode* node);
     TreeNode* rotateRightLeft(TreeNode* node);
-
     TreeNode* helperInsert(TreeNode* node, string name, string ufid);
     TreeNode* helperRemoveID(TreeNode* node, string ufid);
     void helperSearchID(TreeNode* node, string ufid);
@@ -64,9 +63,6 @@ public:
     void removeInorder(int n);
 
     AVLTree() : root() {}
-
-
-
 };
 
 
