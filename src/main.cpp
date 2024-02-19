@@ -97,7 +97,6 @@ int main() {
             }
             else {
                 myAVL.removeID(commands[1]);
-                printSuccessful();
             }
         }
         else if (commands[0] == "search") {

@@ -172,16 +172,16 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
 
     int balanceFactor = calculateBalance(node);
 
-    if (balanceFactor > 1 && ufid < node->left->ufid) {  // Left left
+    if (balanceFactor > 1 && ufid < node->left->ufid) {  // Left left case
         return rotateRight(node);
     }
-    if (balanceFactor < -1 && ufid > node->right->ufid) {  // Right right
+    if (balanceFactor < -1 && ufid > node->right->ufid) {  // Right right case
         return rotateLeft(node);
     }
-    if (balanceFactor > 1 && ufid > node->left->ufid) {  // Left right
+    if (balanceFactor > 1 && ufid > node->left->ufid) {  // Left right case
         return rotateLeftRight(node);
     }
-    if (balanceFactor < -1 && ufid < node->right->ufid) {  // Right left
+    if (balanceFactor < -1 && ufid < node->right->ufid) {  // Right left case
         return rotateRightLeft(node);
     }
 
@@ -205,21 +205,24 @@ TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Refere
         return node;
     }
 
-    if (node->left == nullptr && node->right == nullptr) {  // No children
+    if (node->left == nullptr && node->right == nullptr) {  // No children case
         delete node;
+        cout << "successful" << endl;
         return nullptr;
     }
-    else if (node->left == nullptr) {  // One right child
+    else if (node->left == nullptr) {  // One right child case
         TreeNode* temp = node->right;
         delete node;
+        cout << "successful" << endl;
         return temp;
     }
-    else if (node->right == nullptr) {  // One left child
+    else if (node->right == nullptr) {  // One left child case
         TreeNode* temp = node->left;
         delete node;
+        cout << "successful" << endl;
         return temp;
     }
-    else {  // Two children
+    else {  // Two children case
         TreeNode* parent = node;
 
         // Find leftmost node in the right subtree
@@ -240,6 +243,7 @@ TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Refere
         node->ufid = current->ufid;
 
         delete current;
+        cout << "successful" << endl;
         return node;
     }
 }
