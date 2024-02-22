@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <cstring>
 using namespace std;
 
 /* Note:
@@ -29,7 +30,10 @@ vector<string> parseInput(std::string input) {
 
     string item;
     while (ss >> item) {
-        if (item.front() == '"') {
+        if (item.front() == '"' && item.back() == '"') {
+            parsed.push_back(item);
+        }
+        else if (item.front() == '"') {
             parsed.push_back(item);
             quote = true;
         }
@@ -68,7 +72,15 @@ bool validName(std::string name) {
 
 bool validID(std::string ufid) {
     // Check if 8 characters long and contain only numbers
-    return all_of(ufid.begin(), ufid.end(), ::isdigit) && ufid.length() == 8;
+    for (char c : ufid) {
+        if (!isdigit(c)) {
+            return false;
+        }
+    }
+    if (ufid.length() != 8) {
+        return false;
+    }
+    return true;
 }
 
 bool helperSearch(std::string token) {  // Returns true if name and false if UFID
@@ -92,7 +104,6 @@ int main() {
     string commandString;
     vector<string> commands;
 
-    cout << "Input number of commands: ";
     cin >> numCommands;
     cin.ignore(); // Referenced: https://cplusplus.com/reference/istream/istream/ignore/
 
@@ -163,7 +174,6 @@ int main() {
             }
             else {
                 if (myAVL.removeInorder(idx)) {
-                    printSuccessful();
                 }
             }
         }

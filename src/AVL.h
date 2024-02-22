@@ -4,6 +4,9 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
+#include <sstream>
+#include <vector>
 using namespace std;
 
 #ifndef GATOR_AVL_PROJECT_AVL_H

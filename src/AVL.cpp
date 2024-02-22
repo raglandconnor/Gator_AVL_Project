@@ -52,7 +52,15 @@ bool AVLTree::validName(std::string name) {
 
 bool AVLTree::validID(std::string ufid) {
     // Check if 8 characters long and contain only numbers
-    return all_of(ufid.begin(), ufid.end(), ::isdigit) && ufid.length() == 8;
+    for (char c : ufid) {
+        if (!isdigit(c)) {
+            return false;
+        }
+    }
+    if (ufid.length() != 8) {
+        return false;
+    }
+    return true;
 }
 
 bool AVLTree::containsID(TreeNode* node, std::string ufid) {
