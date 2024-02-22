@@ -25,16 +25,39 @@ string removeQuotations(string name) {  // Referenced https://cplusplus.com/refe
 vector<string> parseInput(std::string input) {
     stringstream ss(input);
     vector<string> parsed;
+    bool quote = false;
 
     string item;
     while (ss >> item) {
-        parsed.push_back(item);
+        if (item.front() == '"') {
+            parsed.push_back(item);
+            quote = true;
+        }
+        else if (item.back() == '"') {
+            quote = false;
+            if (!parsed.empty()) {
+                parsed.back() += " " + item;
+            }
+            else {
+                parsed.push_back(item);
+            }
+        }
+        else if (quote) {
+            parsed.back() += " " + item;
+        }
+        else {  // Non " " case
+            parsed.push_back(item);
+        }
     }
 
     return parsed;
 }
 
 bool validName(std::string name) {
+    if (name[0] != '"') {
+        return false;
+    }
+    name = removeQuotations(name);
     for (char ch : name) {
         if (!isalpha(ch) && ch != ' ') {  // Only alphabetic or spaces
             return false;
@@ -83,12 +106,11 @@ int main() {
 //        }
 //        cout << endl;
         if (commands[0] == "insert") {
-            if (!validName(removeQuotations(commands[1])) || !validID(commands[2]) || commands.size() != 3) {
+            if (!validName(commands[1]) || !validID(commands[2]) || commands.size() != 3) {
                 printUnsuccessful();
             }
             else {
                 myAVL.insert(removeQuotations(commands[1]), commands[2]);
-                printSuccessful();
             }
         }
         else if (commands[0] == "remove") {  // Removes by UFID
@@ -103,9 +125,8 @@ int main() {
             // If quotations => name
             // If numbers => UFID
             if (helperSearch(removeQuotations(commands[1]))) {  // True = name
-                commands[1] = removeQuotations(commands[1]);
                 if (validName(commands[1])) {
-                    myAVL.searchName(commands[1]);
+                    myAVL.searchName(removeQuotations(commands[1]));
                 }
                 else {
                     printUnsuccessful();
@@ -120,7 +141,7 @@ int main() {
                 }
             }
         }
-        else if (commands[0] == "printInorder") {  // TODO: fix printing without commas
+        else if (commands[0] == "printInorder") {
             myAVL.printInorder();
             cout << endl;
         }
@@ -141,11 +162,12 @@ int main() {
                 printUnsuccessful();
             }
             else {
-                myAVL.removeInorder(idx);
-                printSuccessful();
+                if (myAVL.removeInorder(idx)) {
+                    printSuccessful();
+                }
             }
         }
-        else {
+        else {  // If command is invalid
             printUnsuccessful();
         }
     }

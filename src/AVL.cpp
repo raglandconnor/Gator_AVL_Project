@@ -74,26 +74,19 @@ bool AVLTree::containsID(TreeNode* node, std::string ufid) {
 }
 
 bool AVLTree::containsName(TreeNode* node, std::string name) {
-    bool result = false;
     if (node == nullptr) {
-        result = false;
+        return false;
     }
-    else {
-        if (identicalName(name, node->name)) {
-            return true;
-        }
-
-        result = containsName(node->left, name);
-        if (result) {
-            return true;
-        }
-
-        result = containsName(node->right, name);
-        if (result) {
-            return true;
-        }
+    if (identicalName(name, node->name)) {
+        return true;
     }
-    return result;
+    if (containsName(node->left, name)) {
+        return true;
+    }
+    if (containsName(node->right, name)) {
+        return true;
+    }
+    return false;
 }
 
 int AVLTree::calculateBalance(TreeNode* node) {  // Calculates the balance facter of a particular node
@@ -154,6 +147,8 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
     }
     else {
         if (node == nullptr) {
+            this->nodeCount++;  // Increment nodeCount in tree class
+            cout << "successful" << endl;
             return new TreeNode(name, ufid);
         }
         if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
@@ -189,7 +184,7 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
 }
 
 TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Referenced from slide 38 of Trees
-    if (!containsID(node, ufid)) {  // If already present => don't add
+    if (!containsID(node, ufid)) {  // If not in tree => unsuccessful
         cout << "unsuccessful" << endl;
         return node;
     }
@@ -198,54 +193,63 @@ TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Refere
     }
     if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
         node->left = helperRemoveID(node->left, ufid);
-        return node;
     }
-    if (compareID(ufid, node->ufid) > 0) {  // ufid1 > ufid2
+    else if (compareID(ufid, node->ufid) > 0) {  // ufid1 > ufid2
         node->right = helperRemoveID(node->right, ufid);
+    }
+    else {
+        if (node->left == nullptr && node->right == nullptr) {  // No children case
+            delete node;
+            cout << "successful" << endl;
+            this->nodeCount--;
+            node = nullptr;
+        }
+        else if (node->left == nullptr) {  // One right child case
+            TreeNode* temp = node->right;
+            delete node;
+            cout << "successful" << endl;
+            this->nodeCount--;
+            node = temp;
+        }
+        else if (node->right == nullptr) {  // One left child case
+            TreeNode* temp = node->left;
+            delete node;
+            cout << "successful" << endl;
+            this->nodeCount--;
+            node = temp;
+        }
+        else {  // Two children case
+        TreeNode* newParent = node;
+
+            // Find the smallest node in the right subtree (in order successor)
+            TreeNode* successor = node->right;
+            while (successor->left != nullptr) {
+                newParent = successor;
+                successor = successor->left;
+            }
+            node->name = successor->name;
+            node->ufid = successor->ufid;
+
+            if (newParent != node) {
+                newParent->left = successor->right;
+            }
+            else {
+                newParent->right = successor->right;
+            }
+
+            delete successor;
+            cout << "successful" << endl;
+            this->nodeCount--;
+        }
+    }
+
+    if (node == nullptr) {  // No nodes left after deleting
         return node;
     }
 
-    if (node->left == nullptr && node->right == nullptr) {  // No children case
-        delete node;
-        cout << "successful" << endl;
-        return nullptr;
-    }
-    else if (node->left == nullptr) {  // One right child case
-        TreeNode* temp = node->right;
-        delete node;
-        cout << "successful" << endl;
-        return temp;
-    }
-    else if (node->right == nullptr) {  // One left child case
-        TreeNode* temp = node->left;
-        delete node;
-        cout << "successful" << endl;
-        return temp;
-    }
-    else {  // Two children case
-        TreeNode* parent = node;
+    node->height = nodeHeight(node);
 
-        // Find leftmost node in the right subtree
-        TreeNode* current = node->right;
-        while (current->left != nullptr) {
-            parent = current;
-            current = current->left;
-        }
-
-        if (parent != node) {
-            parent->left = current->right;
-        }
-        else {
-            parent->right = current->right;
-        }
-
-        node->name = current->name;
-        node->ufid = current->ufid;
-
-        delete current;
-        cout << "successful" << endl;
-        return node;
-    }
+    return node;
 }
 
 void AVLTree::helperSearchID(TreeNode* node, std::string ufid) {
@@ -278,14 +282,18 @@ void AVLTree::helperSearchName(TreeNode* node, std::string name) {  // Need to s
     }
 }
 
-void AVLTree::helperInorder(TreeNode* node) {
+void AVLTree::helperInorder(TreeNode* node, int& count) {
     if (node == nullptr) {
         cout << "";
     }
     else {
-        helperInorder(node->left);
-        cout << node->name << ", ";
-        helperInorder(node->right);
+        helperInorder(node->left, count);
+        cout << node->name;
+        count++;
+        if (count != this->nodeCount) {
+            cout << ", ";
+        }
+        helperInorder(node->right, count);
     }
 }
 
@@ -297,25 +305,33 @@ void AVLTree::vectorInorder(TreeNode* node, vector<string> &ufidVector) {
     }
 }
 
-void AVLTree::helperPreorder(TreeNode* node) {
+void AVLTree::helperPreorder(TreeNode* node, int& count) {
     if (node == nullptr) {
         cout << "";
     }
     else {
-        cout << node->name << " ";
-        helperPreorder(node->left);
-        helperPreorder(node->right);
+        count++;
+        cout << node->name;
+        if (count != this->nodeCount) {
+            cout << ", ";
+        }
+        helperPreorder(node->left, count);
+        helperPreorder(node->right, count);
     }
 }
 
-void AVLTree::helperPostorder(TreeNode* node) {
+void AVLTree::helperPostorder(TreeNode* node, int& count) {
     if (node == nullptr) {
         cout << "";
     }
     else {
-        helperPostorder(node->left);
-        helperPostorder(node->right);
-        cout << node->name << " ";
+        helperPostorder(node->left, count);
+        helperPostorder(node->right, count);
+        count++;
+        cout << node->name;
+        if (count != this->nodeCount) {
+            cout << ", ";
+        }
     }
 }
 
@@ -341,33 +357,42 @@ void AVLTree::searchName(std::string name) {
 }
 
 void AVLTree::printInorder() {
-    helperInorder(this->root);
+    int count = 0;
+    helperInorder(this->root, count);
 }
 
 void AVLTree::printPreorder() {
-    helperPreorder(this->root);
+    int count = 0;
+    helperPreorder(this->root, count);
 }
 
 void AVLTree::printPostorder() {
-    helperPostorder(this->root);
+    int count = 0;
+    helperPostorder(this->root, count);
 }
 
 void AVLTree::printLevelCount() {
     if (this->root == nullptr) {
-        cout << 0;
+        cout << 0 << endl;
     }
     else {
         cout << this->root->height << endl;
     }
 }
 
-void AVLTree::removeInorder(int n) {
+bool AVLTree::removeInorder(int n) {
+    if (this->root == nullptr) {
+        cout << "unsuccessful" << endl;
+        return false;
+    }
     vector<string> ufidVector;
     vectorInorder(this->root, ufidVector);
     if (ufidVector.size()-1 < n) {
         cout << "unsuccessful" << endl;
+        return false;
     }
     else {
         removeID(ufidVector.at(n));
     }
+    return true;
 }

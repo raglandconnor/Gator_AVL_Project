@@ -28,6 +28,8 @@ struct TreeNode {
 class AVLTree {
 private:
     TreeNode* root;
+    int nodeCount = 0;
+
     int nodeHeight(TreeNode* node);
     int getHeight(TreeNode* node);
     int compareID(string ufid1, string ufid2);
@@ -46,10 +48,10 @@ private:
     TreeNode* helperRemoveID(TreeNode* node, string ufid);
     void helperSearchID(TreeNode* node, string ufid);
     void helperSearchName(TreeNode* node, string name);  // Returns false if name is not found
-    void helperInorder(TreeNode* node);
+    void helperInorder(TreeNode* node, int& count);
     void vectorInorder(TreeNode* node, vector<string> &ufidVector);
-    void helperPreorder(TreeNode* node);
-    void helperPostorder(TreeNode* node);
+    void helperPreorder(TreeNode* node, int& count);
+    void helperPostorder(TreeNode* node, int& count);
 
 public:
     void insert(string name, string ufid);
@@ -60,7 +62,7 @@ public:
     void printPreorder();
     void printPostorder();
     void printLevelCount();
-    void removeInorder(int n);
+    bool removeInorder(int n);
 
     AVLTree() : root() {}
 };
