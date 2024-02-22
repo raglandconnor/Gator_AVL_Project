@@ -42,6 +42,10 @@ string AVLTree::removeQuotations(std::string name) {  // Referenced https://cplu
 }
 
 bool AVLTree::validName(std::string name) {
+    if (name[0] != '"') {
+        return false;
+    }
+    name = removeQuotations(name);
     for (char ch : name) {
         if (!isalpha(ch) && ch != ' ') {  // Only alphabetic or spaces
             return false;
@@ -149,26 +153,20 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
         return node;
     }
     name = removeQuotations(name);
-    if (!validName(name) || !validID(ufid)) {
+    if (node == nullptr) {
+        this->nodeCount++;  // Increment nodeCount in tree class
+        cout << "successful" << endl;
+        return new TreeNode(name, ufid);
+    }
+    if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
+        node->left = helperInsert(node->left, name, ufid);
+    }
+    else if (compareID(ufid, node->ufid) == 0) {
         cout << "unsuccessful" << endl;
         return node;
     }
-    else {
-        if (node == nullptr) {
-            this->nodeCount++;  // Increment nodeCount in tree class
-            cout << "successful" << endl;
-            return new TreeNode(name, ufid);
-        }
-        if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
-            node->left = helperInsert(node->left, name, ufid);
-        }
-        else if (compareID(ufid, node->ufid) == 0) {
-            cout << "unsuccessful" << endl;
-            return node;
-        }
-        else {  // > 0 : ufid1 > ufid2
-            node->right = helperInsert(node->right, name, ufid);
-        }
+    else {  // > 0 : ufid1 > ufid2
+        node->right = helperInsert(node->right, name, ufid);
     }
 
     node->height = nodeHeight(node);
@@ -343,7 +341,124 @@ void AVLTree::helperPostorder(TreeNode* node, int& count) {
     }
 }
 
+bool AVLTree::helperSearchCommand(std::string token) {
+    if (!validID(token)) {  // If not a valid id it is possibly a name
+        return true;
+    }
+    return false;
+}
+
+vector<string> AVLTree::parseInputs(std::string input) {
+    stringstream ss(input);
+    vector<string> parsed;
+    bool quote = false;
+
+    string item;
+    while (ss >> item) {
+        if (item.front() == '"' && item.back() == '"') {
+            parsed.push_back(item);
+        }
+        else if (item.front() == '"') {
+            parsed.push_back(item);
+            quote = true;
+        }
+        else if (item.back() == '"') {
+            quote = false;
+            if (!parsed.empty()) {
+                parsed.back() += " " + item;
+            }
+            else {
+                parsed.push_back(item);
+            }
+        }
+        else if (quote) {
+            parsed.back() += " " + item;
+        }
+        else {  // Non " " case
+            parsed.push_back(item);
+        }
+    }
+
+//    for (int i = 0; i < parsed.size(); i++) {
+//        cout << parsed[i] << endl;
+//    }
+    return parsed;
+}
+
+void AVLTree::executeCommands(vector<std::string> commands) {
+    if (commands[0] == "insert") {
+        if (!validName(commands[1]) || !validID(commands[2]) || commands.size() != 3) {
+            cout << "unsuccessful" << endl;
+        }
+        else {
+            insert(removeQuotations(commands[1]), commands[2]);
+        }
+    }
+    else if (commands[0] == "remove") {  // Removes by UFID
+        if (!validID(commands[1])) {
+            cout << "unsuccessful" << endl;
+        }
+        else {
+            removeID(commands[1]);
+        }
+    }
+    else if (commands[0] == "search") {
+        // If quotations => name
+        // If numbers => UFID
+        if (helperSearchCommand(removeQuotations(commands[1]))) {  // True = name
+            if (validName(commands[1])) {
+                searchName(removeQuotations(commands[1]));
+            }
+            else {
+                cout << "unsuccessful" << endl;
+            }
+        }
+        else {  // False = UFID
+            if (validID(commands[1])) {
+                searchID(commands[1]);
+            }
+            else {
+                cout << "unsuccessful" << endl;
+            }
+        }
+    }
+    else if (commands[0] == "printInorder") {
+        printInorder();
+        cout << endl;
+    }
+    else if (commands[0] == "printPreorder") {
+        printPreorder();
+        cout << endl;
+    }
+    else if (commands[0] == "printPostorder") {
+        printPostorder();
+        cout << endl;
+    }
+    else if (commands[0] == "printLevelCount") {
+        printLevelCount();
+    }
+    else if (commands[0] == "removeInorder") {
+        int idx = stoi(commands[1]);
+        if (idx < 0) {
+            cout << "unsuccessful" << endl;
+        }
+        else {
+            if (removeInorder(idx)) {
+            }
+        }
+    }
+    else {  // If command is invalid
+        cout << "unsuccessful" << endl;
+    }
+}
+
+void AVLTree::command(std::string commandLine) {
+    vector<string> commands = parseInputs(commandLine);
+    executeCommands(commands);
+}
+
 void AVLTree::insert(std::string name, std::string ufid) {
+//    validName(name);
     this->root = helperInsert(this->root, name, ufid);
 }
 

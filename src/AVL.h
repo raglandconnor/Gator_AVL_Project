@@ -56,7 +56,13 @@ private:
     void helperPreorder(TreeNode* node, int& count);
     void helperPostorder(TreeNode* node, int& count);
 
+    bool helperSearchCommand(string token);
+    vector<string> parseInputs(string commandLine);
+    void executeCommands(vector<string> commands);
+
 public:
+    void command(string commandLine);
+
     void insert(string name, string ufid);
     void removeID(string ufid);
     void searchID(string ufid);
