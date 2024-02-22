@@ -65,7 +65,7 @@ TEST_CASE("Test edge cases", "[second]") {
 }
 
 TEST_CASE("Test rotations", "[third]") {
-    SECTION("Left rotation test") {
+    SECTION("Left rotation test 1") {
         AVLTree myAVL;
 
         std::ostringstream oss;
@@ -87,49 +87,227 @@ TEST_CASE("Test rotations", "[third]") {
         REQUIRE(output == "successful\nsuccessful\nsuccessful\nFive, Six, Seven\nSix, Five, Seven\nFive, Seven, Six\n");
     }
 
-    SECTION("Right rotation") {
+    SECTION("Right rotation 1") {
+        AVLTree myAVL;
 
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Four\" 40000000");
+        myAVL.command("insert \"Three\" 30000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nThree, Four, Five\nFour, Three, Five\nThree, Five, Four\n");
     }
 
-    SECTION("Left-Right rotation") {
+    SECTION("Left-Right rotation 1") {
+        AVLTree myAVL;
 
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Three\" 30000000");
+        myAVL.command("insert \"Four\" 40000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nThree, Four, Five\nFour, Three, Five\nThree, Five, Four\n");
     }
 
-    SECTION("Right-Left rotation") {
+    SECTION("Right-Left rotation 1") {
+        AVLTree myAVL;
 
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Seven\" 70000000");
+        myAVL.command("insert \"Six\" 60000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nFive, Six, Seven\nSix, Five, Seven\nFive, Seven, Six\n");
+    }
+
+    SECTION("Right rotation 2: rotation with parents") {
+        AVLTree myAVL;
+
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Four\" 40000000");
+        myAVL.command("insert \"Six\" 60000000");
+        myAVL.command("insert \"Three\" 30000000");
+        myAVL.command("insert \"One\" 10000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nOne, Three, Four, Five, Six\nFive, Three, One, Four, Six\nOne, Four, Three, Six, Five\n");
     }
 }
 
-//TEST_CASE("Test 2", "[flag]"){
-//	// you can also use "sections" to share setup code between tests, for example:
-////	int one = 1;
-////
-////	SECTION("num is 2") {
-////		int num = one + 1;
-////		REQUIRE(num == 2);
-////	};
-////
-////	SECTION("num is 3") {
-////		int num = one + 2;
-////		REQUIRE(num == 3);
-//	};
-//
-//	// each section runs the setup code independently to ensure that they don't affect each other
-////}
-//
-//// you must write 5 unique, meaningful tests for credit on the testing portion of this project!
-//
-//// the provided test from the template is below.
-//
-//TEST_CASE("Example BST Insert", "[flag]"){
-//	/*
-//		MyAVLTree tree;   // Create a Tree object
-//		tree.insert(3);
-//		tree.insert(2);
-//		tree.insert(1);
-//		std::vector<int> actualOutput = tree.inorder();
-//		std::vector<int> expectedOutput = {1, 2, 3};
-//		REQUIRE(expectedOutput.size() == actualOutput.size());
-//		REQUIRE(actualOutput == expectedOutput);
-//	*/
-//}
+TEST_CASE("Test deletion cases", "[third]") {
+    SECTION("No children deletion case") {
+        AVLTree myAVL;
+
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Six\" 60000000");
+        myAVL.command("remove 60000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+        myAVL.command("remove 50000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nFive\nFive\nFive\nsuccessful\n\n\n\n");
+    }
+
+    SECTION("One child deletion case") {
+        AVLTree myAVL;
+
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Four\" 40000000");
+        myAVL.command("insert \"Six\" 60000000");
+        myAVL.command("insert \"Seven\" 70000000");
+        myAVL.command("remove 60000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+        myAVL.command("insert \"Eight\" 80000000");
+        myAVL.command("remove 70000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nFour, Five, Seven\nFive, Four, Seven\nFour, Seven, Five\nsuccessful\nsuccessful\nFour, Five, Eight\nFive, Four, Eight\nFour, Eight, Five\n");
+    }
+
+    SECTION("Two children deletion case at the root") {
+        AVLTree myAVL;
+
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Four\" 40000000");
+        myAVL.command("insert \"Six\" 60000000");
+        myAVL.command("remove 50000000");
+        myAVL.command("printInorder");
+        myAVL.command("printPreorder");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nsuccessful\nFour, Six\nSix, Four\nFour, Six\n");
+    }
+
+    SECTION("Two children deletion case (not root)") {
+        AVLTree myAVL;
+
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Eight\" 80000000");
+        myAVL.command("insert \"Two\" 20000000");
+        myAVL.command("insert \"Nine\" 90000000");
+        myAVL.command("insert \"Four\" 40000000");
+        myAVL.command("insert \"One\" 10000000");
+        myAVL.command("insert \"Three\" 30000000");
+        myAVL.command("printPostorder");
+        myAVL.command("remove 20000000");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nOne, Three, Four, Two, Nine, Eight, Five\nsuccessful\nOne, Four, Three, Nine, Eight, Five\n");
+    }
+
+    SECTION("Two children deletion case three+ children and a child on the successor") {
+        AVLTree myAVL;
+
+        std::ostringstream oss;
+        std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+        std::cout.rdbuf(oss.rdbuf());
+
+        myAVL.command("insert \"Five\" 50000000");
+        myAVL.command("insert \"Eight\" 80000000");
+        myAVL.command("insert \"Two\" 20000000");
+        myAVL.command("insert \"Nine\" 90000000");
+        myAVL.command("insert \"Four\" 40000000");
+        myAVL.command("insert \"One\" 10000000");
+        myAVL.command("insert \"Three\" 30000000");
+        myAVL.command("insert \"Six\" 60000000");
+        myAVL.command("insert \"Seven\" 70000000");
+        myAVL.command("printPostorder");
+        myAVL.command("remove 50000000");
+        myAVL.command("printPostorder");
+
+        std::string output = oss.str();
+
+        std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+        // Check if output matches expected result
+        REQUIRE(output == "successful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nOne, Three, Four, Two, Seven, Six, Nine, Eight, Five\nsuccessful\nOne, Three, Four, Two, Seven, Nine, Eight, Six\n");
+    }
+}

@@ -225,22 +225,22 @@ TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Refere
             node = temp;
         }
         else {  // Two children case
-        TreeNode* newParent = node;
+            TreeNode* successorParent = node;
 
             // Find the smallest node in the right subtree (in order successor)
             TreeNode* successor = node->right;
             while (successor->left != nullptr) {
-                newParent = successor;
+                successorParent = successor;
                 successor = successor->left;
             }
             node->name = successor->name;
             node->ufid = successor->ufid;
 
-            if (newParent != node) {
-                newParent->left = successor->right;
+            if (successorParent != node) {
+                successorParent->left = successor->right;
             }
             else {
-                newParent->right = successor->right;
+                successorParent->right = successor->right;
             }
 
             delete successor;
