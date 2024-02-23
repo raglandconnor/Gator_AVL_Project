@@ -5,9 +5,6 @@
 #include "AVL.h"
 
 int AVLTree::nodeHeight(TreeNode* node) {  // Referenced from lecture slides
-    if (node == nullptr) {
-        return 0;
-    }
     return 1 + std::max(node->left == nullptr ? 0 : node->left->height, node->right == nullptr ? 0 : node->right->height);
 }
 
@@ -25,13 +22,13 @@ int AVLTree::compareID(std::string ufid1, std::string ufid2) {
     return ufid1.compare(ufid2);
 }
 
-bool AVLTree::identicalName(std::string name1, std::string name2) {
+bool AVLTree::identicalName(std::string name1, std::string name2) {  // Returns a bool on whether the name is identical or not
     return name1 == name2;
 }
 
-string AVLTree::removeQuotations(std::string name) {  // Referenced https://cplusplus.com/reference/cstring/strtok/
+string AVLTree::removeQuotations(std::string name) {  // Removes the quotations from as tring
     const char* charName = name.c_str();
-
+    // Referenced https://cplusplus.com/reference/cstring/strtok/
     char* temp = strtok((char*)charName, "\"");
     if (temp != nullptr) {
         return (string)temp;
@@ -41,11 +38,11 @@ string AVLTree::removeQuotations(std::string name) {  // Referenced https://cplu
     }
 }
 
-bool AVLTree::validName(std::string name) {
-    if (name[0] != '"') {
+bool AVLTree::validName(std::string name) {  // Returns if a name is valid
+    if (name[0] != '"') {  // If there is no leading quotation, it is not a name.
         return false;
     }
-    name = removeQuotations(name);
+    name = removeQuotations(name);  // Remove quotations
     for (char ch : name) {
         if (!isalpha(ch) && ch != ' ') {  // Only alphabetic or spaces
             return false;
@@ -54,8 +51,7 @@ bool AVLTree::validName(std::string name) {
     return true;
 }
 
-bool AVLTree::validID(std::string ufid) {
-    // Check if 8 characters long and contain only numbers
+bool AVLTree::validID(std::string ufid) {  // Check if 8 characters long and contain only numbers
     for (char c : ufid) {
         if (!isdigit(c)) {
             return false;
@@ -67,7 +63,7 @@ bool AVLTree::validID(std::string ufid) {
     return true;
 }
 
-bool AVLTree::containsID(TreeNode* node, std::string ufid) {
+bool AVLTree::containsID(TreeNode* node, std::string ufid) {  // Checks if the tree contains a node with the corresponding UFID
     bool result = false;
     if (node == nullptr) {
         result = false;
@@ -85,7 +81,7 @@ bool AVLTree::containsID(TreeNode* node, std::string ufid) {
     return result;
 }
 
-bool AVLTree::containsName(TreeNode* node, std::string name) {
+bool AVLTree::containsName(TreeNode* node, std::string name) {  // Checks if the tree contains a node with the corresponding name
     if (node == nullptr) {
         return false;
     }
@@ -105,6 +101,7 @@ int AVLTree::calculateBalance(TreeNode* node) {  // Calculates the balance facte
     return node == nullptr ? 0 : (getHeight(node->left) - getHeight((node->right)));
 }
 
+// Referenced Stepik solutions and the logic in the lecture slides/project overview slides
 TreeNode* AVLTree::rotateLeft(TreeNode* node) {  // node = the root of the rotation
     TreeNode* rightChild = node->right;
     TreeNode* rightChildLeftSubtree = rightChild->left;
@@ -121,6 +118,7 @@ TreeNode* AVLTree::rotateLeft(TreeNode* node) {  // node = the root of the rotat
     return rightChild;
 }
 
+// Referenced Stepik solutions and the logic in the lecture slides/project overview slides
 TreeNode* AVLTree::rotateRight(TreeNode* node) {  // node = root of rotation
     TreeNode* leftChild = node->left;
     TreeNode* leftChildRightSubtree = leftChild->right;
@@ -147,7 +145,8 @@ TreeNode* AVLTree::rotateRightLeft(TreeNode* node) {  // node = root of rotation
     return rotateLeft(node);
 }
 
-TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string ufid) {  // Referenced from slide 28 of balanced trees
+// Referenced from slide 28 of balanced trees
+TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string ufid) {
     name = removeQuotations(name);
     if (node == nullptr) {
         this->nodeCount++;  // Increment nodeCount in tree class
@@ -185,7 +184,8 @@ TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string uf
     return node;
 }
 
-TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Referenced from slide 38 of Trees
+// Referenced from slide 38 of Trees
+TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {
     if (!containsID(node, ufid)) {  // If not in tree => unsuccessful
         cout << "unsuccessful" << endl;
         return node;
@@ -229,9 +229,11 @@ TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Refere
                 successorParent = successor;
                 successor = successor->left;
             }
+            // Move successors values to the node to be deleted
             node->name = successor->name;
             node->ufid = successor->ufid;
 
+            // Re-attach ndoes where the succcessor used to be
             if (successorParent != node) {
                 successorParent->left = successor->right;
             }
@@ -239,6 +241,7 @@ TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Refere
                 successorParent->right = successor->right;
             }
 
+            // Delete successor
             node->right = helperRemoveSuccessor(node->right, successor->ufid);
             cout << "successful" << endl;
             this->nodeCount--;
@@ -249,6 +252,7 @@ TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Refere
         return node;
     }
 
+    // Update heights
     node->height = nodeHeight(node);
 
     return node;
@@ -291,6 +295,7 @@ TreeNode* AVLTree::helperRemoveSuccessor(TreeNode *node, std::string ufid) {
                 successorParent = successor;
                 successor = successor->left;
             }
+            // Swap values
             node->name = successor->name;
             node->ufid = successor->ufid;
 
@@ -301,6 +306,7 @@ TreeNode* AVLTree::helperRemoveSuccessor(TreeNode *node, std::string ufid) {
                 successorParent->right = successor->right;
             }
 
+            // Remove successor
             node->right = helperRemoveSuccessor(node->right, successor->ufid);
             this->nodeCount--;
         }
@@ -310,6 +316,7 @@ TreeNode* AVLTree::helperRemoveSuccessor(TreeNode *node, std::string ufid) {
         return node;
     }
 
+    // Update heights
     node->height = nodeHeight(node);
 
     return node;
@@ -319,14 +326,14 @@ void AVLTree::helperSearchID(TreeNode* node, std::string ufid) {
     if (node == nullptr) {
         cout << "unsuccessful" << endl;
     }
-    else if (compareID(ufid, node->ufid) == 0) {
+    else if (compareID(ufid, node->ufid) == 0) {  // Print name if found
         cout << node->name << endl;
     }
     else {
-        if (compareID(ufid, node->ufid) < 0) {
+        if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
             helperSearchID(node->left, ufid);
         }
-        else {
+        else {  // ufid1 > ufid2
             helperSearchID(node->right, ufid);
         }
     }
@@ -337,11 +344,11 @@ void AVLTree::helperSearchName(TreeNode* node, std::string name) {  // Need to s
         cout << "";
     }
     else {
-        if (identicalName(node->name, name)) {
+        if (identicalName(node->name, name)) {  // If identical print the ufid
             cout << node->ufid << endl;
         }
-        helperSearchName(node->left, name);
-        helperSearchName(node->right, name);
+        helperSearchName(node->left, name);  // Search left
+        helperSearchName(node->right, name);  // Search right
     }
 }
 
@@ -398,28 +405,28 @@ void AVLTree::helperPostorder(TreeNode* node, int& count) {
     }
 }
 
-bool AVLTree::helperSearchCommand(std::string token) {
+bool AVLTree::helperSearchCommand(std::string token) {  // Checks if the input is a name or a ufid
     if (!validID(token)) {  // If not a valid id it is possibly a name
         return true;
     }
     return false;
 }
 
-vector<string> AVLTree::parseInputs(std::string input) {
+vector<string> AVLTree::parseInputs(std::string input) {  // Parse inputs from one line of a command.
     stringstream ss(input);
     vector<string> parsed;
     bool quote = false;
 
     string item;
     while (ss >> item) {
-        if (item.front() == '"' && item.back() == '"') {
+        if (item.front() == '"' && item.back() == '"') {  // Check if one item of a string is one word in quotations
             parsed.push_back(item);
         }
-        else if (item.front() == '"') {
+        else if (item.front() == '"') {  // If starts with quotation but doesn't finish
             parsed.push_back(item);
             quote = true;
         }
-        else if (item.back() == '"') {
+        else if (item.back() == '"') {  // Final part of a quotation wrapped name
             quote = false;
             if (!parsed.empty()) {
                 parsed.back() += " " + item;
@@ -429,22 +436,19 @@ vector<string> AVLTree::parseInputs(std::string input) {
             }
         }
         else if (quote) {
-            parsed.back() += " " + item;
+            parsed.back() += " " + item;  // Middle part of a quotation wrapped name with spaces
         }
         else {  // Non " " case
             parsed.push_back(item);
         }
     }
 
-//    for (int i = 0; i < parsed.size(); i++) {
-//        cout << parsed[i] << endl;
-//    }
     return parsed;
 }
 
-void AVLTree::executeCommands(vector<std::string> commands) {
+void AVLTree::executeCommands(vector<std::string> commands) {  // Where the commands are executed after being parsed.
     if (commands[0] == "insert") {
-        if (!validName(commands[1]) || !validID(commands[2]) || commands.size() != 3) {
+        if (!validName(commands[1]) || !validID(commands[2]) || commands.size() != 3) {  // Check valid insert
             cout << "unsuccessful" << endl;
         }
         else {
@@ -509,7 +513,7 @@ void AVLTree::executeCommands(vector<std::string> commands) {
     }
 }
 
-void AVLTree::command(std::string commandLine) {
+void AVLTree::command(std::string commandLine) {  // Public function for the user to enter the command in
     vector<string> commands = parseInputs(commandLine);
     executeCommands(commands);
 }
@@ -565,7 +569,7 @@ bool AVLTree::removeInorder(int n) {
         return false;
     }
     vector<string> ufidVector;
-    vectorInorder(this->root, ufidVector);
+    vectorInorder(this->root, ufidVector);  // Add all nodes from tree into a vector in-order
     if (ufidVector.size()-1 < n) {
         cout << "unsuccessful" << endl;
         return false;

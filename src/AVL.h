@@ -20,19 +20,23 @@ using namespace std;
 struct TreeNode {
     string name;
     string ufid;
-
     int height = 1;  // One-based height
 
+    // Left and right children pointers
     TreeNode* left;
     TreeNode* right;
+
+    // Constructor
     TreeNode(string name, string ufid) : name(name), ufid(ufid), left(nullptr), right(nullptr) {}
 };
 
 class AVLTree {
 private:
+    // Root variable and count of nodes
     TreeNode* root;
     int nodeCount = 0;
 
+    // Helper functions
     int nodeHeight(TreeNode* node);
     int getHeight(TreeNode* node);
     int compareID(string ufid1, string ufid2);
@@ -57,13 +61,16 @@ private:
     void helperPreorder(TreeNode* node, int& count);
     void helperPostorder(TreeNode* node, int& count);
 
+    // Helper functions for the command input/parsing
     bool helperSearchCommand(string token);
     vector<string> parseInputs(string commandLine);
     void executeCommands(vector<string> commands);
 
 public:
+    // User command input function
     void command(string commandLine);
 
+    // Public functions accessible by the user
     void insert(string name, string ufid);
     void removeID(string ufid);
     void searchID(string ufid);

@@ -17,7 +17,7 @@ int main() {
     cin.ignore(); // Referenced: https://cplusplus.com/reference/istream/istream/ignore/
 
     for (int i = 0; i < numCommands; i++) {
-        getline(cin, commandString);
+        getline(cin, commandString);  // Take every line as input
 
         myAVL.command(commandString);
     }
