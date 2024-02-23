@@ -148,10 +148,6 @@ TreeNode* AVLTree::rotateRightLeft(TreeNode* node) {  // node = root of rotation
 }
 
 TreeNode* AVLTree::helperInsert(TreeNode* node, std::string name, std::string ufid) {  // Referenced from slide 28 of balanced trees
-    if (containsID(node, ufid)) {  // If already present => don't add
-        cout << "unsuccessful" << endl;
-        return node;
-    }
     name = removeQuotations(name);
     if (node == nullptr) {
         this->nodeCount++;  // Increment nodeCount in tree class

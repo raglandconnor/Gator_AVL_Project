@@ -178,7 +178,7 @@ TEST_CASE("Test rotations", "[third]") {
     }
 }
 
-TEST_CASE("Test deletion cases", "[third]") {
+TEST_CASE("Test deletion cases", "[fourth]") {
     SECTION("No children deletion case") {
         AVLTree myAVL;
 
