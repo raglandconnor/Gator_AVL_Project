@@ -49,6 +49,7 @@ private:
     TreeNode* rotateRightLeft(TreeNode* node);
     TreeNode* helperInsert(TreeNode* node, string name, string ufid);
     TreeNode* helperRemoveID(TreeNode* node, string ufid);
+    TreeNode* helperRemoveSuccessor(TreeNode* node, string ufid);
     void helperSearchID(TreeNode* node, string ufid);
     void helperSearchName(TreeNode* node, string name);  // Returns false if name is not found
     void helperInorder(TreeNode* node, int& count);

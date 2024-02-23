@@ -311,3 +311,34 @@ TEST_CASE("Test deletion cases", "[third]") {
         REQUIRE(output == "successful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nOne, Three, Four, Two, Seven, Six, Nine, Eight, Five\nsuccessful\nOne, Three, Four, Two, Seven, Nine, Eight, Six\n");
     }
 }
+
+TEST_CASE("Height updating", "[extra]") {
+    AVLTree myAVL;
+
+    std::ostringstream oss;
+    std::streambuf* p_cout_streambuf = std::cout.rdbuf();
+    std::cout.rdbuf(oss.rdbuf());
+
+    myAVL.command("insert \"Five\" 50000000");
+    myAVL.command("insert \"Eight\" 80000000");
+    myAVL.command("insert \"Two\" 20000000");
+    myAVL.command("insert \"Nine\" 90000000");
+    myAVL.command("insert \"Four\" 40000000");
+    myAVL.command("insert \"One\" 10000000");
+    myAVL.command("insert \"Three\" 30000000");
+    myAVL.command("insert \"Six\" 60000000");
+    myAVL.command("insert \"Seven\" 70000000");
+    myAVL.command("printLevelCount");
+    myAVL.command("printPostorder");
+    myAVL.command("remove 30000000");
+    myAVL.command("remove 70000000");
+    myAVL.command("printPostorder");
+    myAVL.command("printLevelCount");
+
+    std::string output = oss.str();
+
+    std::cout.rdbuf(p_cout_streambuf); // Restore cout
+
+    // Check if output matches expected result
+    REQUIRE(output == "successful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\nsuccessful\n4\nOne, Three, Four, Two, Seven, Six, Nine, Eight, Five\nsuccessful\nsuccessful\nOne, Four, Two, Six, Nine, Eight, Five\n3\n");
+}

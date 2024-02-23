@@ -243,8 +243,69 @@ TreeNode* AVLTree::helperRemoveID(TreeNode* node, std::string ufid) {  // Refere
                 successorParent->right = successor->right;
             }
 
-            delete successor;
+            node->right = helperRemoveSuccessor(node->right, successor->ufid);
             cout << "successful" << endl;
+            this->nodeCount--;
+        }
+    }
+
+    if (node == nullptr) {  // No nodes left after deleting
+        return node;
+    }
+
+    node->height = nodeHeight(node);
+
+    return node;
+}
+
+TreeNode* AVLTree::helperRemoveSuccessor(TreeNode *node, std::string ufid) {
+    if (node == nullptr) {
+        return node;
+    }
+    if (compareID(ufid, node->ufid) < 0) {  // ufid1 < ufid2
+        node->left = helperRemoveSuccessor(node->left, ufid);
+    }
+    else if (compareID(ufid, node->ufid) > 0) {  // ufid1 > ufid2
+        node->right = helperRemoveSuccessor(node->right, ufid);
+    }
+    else {
+        if (node->left == nullptr && node->right == nullptr) {  // No children case
+            delete node;
+            this->nodeCount--;
+            node = nullptr;
+        }
+        else if (node->left == nullptr) {  // One right child case
+            TreeNode* temp = node->right;
+            delete node;
+            this->nodeCount--;
+            node = temp;
+        }
+        else if (node->right == nullptr) {  // One left child case
+            TreeNode* temp = node->left;
+            delete node;
+            this->nodeCount--;
+            node = temp;
+        }
+        else {  // Two children case
+            TreeNode* successorParent = node;
+
+            // Find the smallest node in the right subtree (in order successor)
+            TreeNode* successor = node->right;
+            while (successor->left != nullptr) {
+                successorParent = successor;
+                successor = successor->left;
+            }
+            node->name = successor->name;
+            node->ufid = successor->ufid;
+
+            if (successorParent != node) {
+                successorParent->left = successor->right;
+            }
+            else {
+                successorParent->right = successor->right;
+            }
+
+            node->right = helperRemoveSuccessor(node->right, successor->ufid);
             this->nodeCount--;
         }
     }
@@ -458,7 +519,6 @@ void AVLTree::command(std::string commandLine) {
 }
 
 void AVLTree::insert(std::string name, std::string ufid) {
-//    validName(name);
     this->root = helperInsert(this->root, name, ufid);
 }
 
