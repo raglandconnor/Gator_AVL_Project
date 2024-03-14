@@ -420,7 +420,13 @@ vector<string> AVLTree::parseInputs(std::string input) {  // Parse inputs from o
     string item;
     while (ss >> item) {
         if (item.front() == '"' && item.back() == '"') {  // Check if one item of a string is one word in quotations
-            parsed.push_back(item);
+            if (item == "\"" && quote) {  // If last item is just the quote, there will be a space before
+                parsed.back() += " " + item;
+                quote = false;
+            }
+            else {
+                parsed.push_back(item);
+            }
         }
         else if (item.front() == '"') {  // If starts with quotation but doesn't finish
             parsed.push_back(item);
